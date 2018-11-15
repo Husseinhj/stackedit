@@ -1,3 +1,6 @@
+import editorSvc from '../services/editorSvc';
+import store from "../store";
+
 var util = {},
   re = window.RegExp,
   SETTINGS = {
@@ -480,6 +483,12 @@ function UIManager(input, commandManager) {
     buttons.clist = bindCommand(function (chunk, postProcessing) {
       this.doList(chunk, postProcessing, false, true);
     });
+    buttons.directionRTL = bindCommand(function (chunk, postProcessing) {
+      this.directionRTL(chunk);
+    });
+    buttons.directionLTR = bindCommand(function (chunk, postProcessing) {
+      this.directionLTR(chunk);
+    });
     buttons.heading = bindCommand("doHeading");
     buttons.hr = bindCommand("doHorizontalRule");
     buttons.table = bindCommand("doTable");
@@ -613,6 +622,18 @@ commandProto.doStrikethrough = function (chunk, postProcessing) {
   }
 
   return;
+};
+
+commandProto.directionRTL = function (chunk) {
+  editorSvc.previewDirection = 'rtl';
+
+  editorSvc.cleanPreview();
+};
+
+commandProto.directionLTR = function (chunk) {
+  editorSvc.previewDirection = 'ltr';
+
+  editorSvc.cleanPreview();
 };
 
 commandProto.stripLinkDefs = function (text, defsToAdd) {
@@ -823,6 +844,14 @@ commandProto.doAutoindent = function (chunk) {
     if (commandMgr.doCode) {
       commandMgr.doCode(chunk);
     }
+  }
+
+  if (commandMgr.directionRTL){
+    commandMgr.directionRTL(chunk);
+  }
+
+  if (commandMgr.directionLTR){
+    commandMgr.directionLTR(chunk);
   }
 
   if (fakeSelection) {
