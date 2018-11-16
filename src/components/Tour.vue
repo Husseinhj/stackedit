@@ -19,6 +19,15 @@
           <button class="button button--resolve" @click="next">Next</button>
         </div>
       </div>
+      <div class="tour-step__inner" v-else-if="step === 'RTL'">
+        <h2>Change preview direction</h2>
+        <p>StackEdit can show markdown <strong>right to left</strong>.</p>
+        <p>Click <iconRTLImage></iconRTLImage> to change preview direction to <strong>right to left</strong>.</p>
+        <div class="tour-step__button-bar">
+          <button class="button" @click="finish">Skip</button>
+          <button class="button button--resolve" @click="next">Next</button>
+        </div>
+      </div>
       <div class="tour-step__inner" v-else-if="step === 'explorer'">
         <h2>File explorer</h2>
         <p>StackEdit can manage multiple files and folders in a workspace.</p>
@@ -56,6 +65,7 @@ import store from '../store';
 const steps = [
   'welcome',
   'editor',
+  'RTL',
   'explorer',
   'menu',
   'end',
@@ -90,6 +100,7 @@ export default {
               style.top = `${anchorRect.top}px`;
               break;
             }
+            case 'RTL':
             case 'editor':
             case 'menu': {
               style.left = `${anchorRect.left}px`;
@@ -202,6 +213,20 @@ $tour-step-width: 240px;
 
   .tour-step--explorer & {
     left: 15px;
+    top: 0;
+    border-top-left-radius: 0;
+
+    &::before {
+      top: 0;
+      left: -10px;
+      border-top: 10px solid $tour-step-background;
+      border-left: 10px solid transparent;
+    }
+  }
+
+  .tour-step--RTL & {
+    left: 310px;
+    top: 20px;
     border-top-left-radius: 0;
 
     &::before {
