@@ -33,7 +33,9 @@ let tokens;
 class SectionDesc {
   constructor(section, previewElt, tocElt, html) {
     this.section = section;
-    this.editorElt = section.elt;
+    if (section !== undefined && section.elt !== undefined) {
+      this.editorElt = section.elt;
+    }
     this.previewElt = previewElt;
     this.tocElt = tocElt;
     this.html = html;
@@ -63,6 +65,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
   selectionRange: null,
   previewSelectionRange: null,
   previewSelectionStartOffset: null,
+  previewDirection: null,
 
   /**
    * Initialize the Prism grammar with the options
@@ -120,7 +123,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
   /**
    * Refresh the preview with the result of `convert()`
    */
-  async refreshPreview() {
+  async refreshPreview(isClean) {
     const sectionDescList = [];
     let sectionPreviewElt;
     let sectionTocElt;
@@ -133,6 +136,12 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
     this.conversionCtx.htmlSectionDiff.forEach((item) => {
       for (let i = 0; i < item[1].length; i += 1) {
         const section = this.conversionCtx.sectionList[sectionIdx];
+        if (isClean === true && item[0] !== -1) {
+          item[0] = -1;
+          i -= 1;
+        } else if (isClean === true && item[0] === -1) {
+          item[0] = 1;
+        }
         if (item[0] === 0) {
           let sectionDesc = this.previewCtx.sectionDescList[sectionDescIdx];
           sectionDescIdx += 1;
@@ -165,7 +174,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
           // Create preview section element
           sectionPreviewElt = document.createElement('div');
           if (!html.startsWith('<pre>')) {
-            sectionPreviewElt.style.direction = store.getters['data/computedSettings'].editor.previewDirection;
+            sectionPreviewElt.style.direction = this.previewDirection;
           }
           sectionPreviewElt.className = 'cl-preview-section';
           sectionPreviewElt.innerHTML = html;
@@ -262,8 +271,12 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
               if (!sectionDesc.previewText) {
                 sectionDesc.previewText = sectionDesc.previewElt.textContent;
               }
+              let sectionText = '';
+              if (sectionDesc.section !== undefined && sectionDesc.section.text !== undefined) {
+                sectionText = sectionDesc.section.text;
+              }
               sectionDesc.textToPreviewDiffs = diffMatchPatch.diff_main(
-                sectionDesc.section.text,
+                sectionText,
                 sectionDesc.previewText,
               );
               hasOne = true;
@@ -342,6 +355,9 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
     return tokens && markdownItPandocRenderer(tokens, this.converter.options);
   },
 
+  cleanPreview() {
+    this.refreshPreview(true);
+  },
   /**
    * Pass the elements to the store and initialize the editor.
    */
@@ -560,6 +576,7 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
             this.options = options;
             this.initPrism();
             this.initConverter();
+            this.previewDirection = store.getters['data/computedSettings'].editor.previewDirection;
             initClEditor = true;
           }
         }
