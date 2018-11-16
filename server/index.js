@@ -59,19 +59,19 @@ module.exports = (app, serveV4) => {
     }
 
     // Serve index.html in /app
-    app.get('/app', (req, res) => res.sendFile(resolvePath('dist/index.html')));
+    app.get('/app', (req, res) => res.sendFile(resolvePath('dist/rtlstackedit/index.html')));
 
     // Serve style.css with 1 day max-age
-    app.get('/style.css', (req, res) => res.sendFile(resolvePath('dist/style.css'), {
+    app.get('/style.css', (req, res) => res.sendFile(resolvePath('dist/rtlstackedit/style.css'), {
       maxAge: '1d',
     }));
 
     // Serve the static folder with 1 year max-age
-    app.use('/static', serveStatic(resolvePath('dist/static'), {
+    app.use('/static', serveStatic(resolvePath('dist/rtlstackedit/static'), {
       maxAge: '1y',
     }));
 
-    app.use(serveStatic(resolvePath('dist')));
+    app.use(serveStatic(resolvePath('dist/rtlstackedit')));
 
     if (serveV4) {
       app.use(serveStatic(path.dirname(resolvePath('stackedit_v4/public/cache.manifest'))));

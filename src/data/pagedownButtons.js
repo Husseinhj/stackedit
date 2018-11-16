@@ -17,6 +17,15 @@ export default [{
   icon: 'format-strikethrough',
 }, {
 }, {
+  method: 'directionRTL',
+  title: 'Right To Left direction',
+  icon: 'RTLImage',
+}, {
+  method: 'directionLTR',
+  title: 'Left To Right direction',
+  icon: 'LTRImage',
+}, {
+}, {
   method: 'ulist',
   title: 'Unordered list',
   icon: 'format-list-bulleted',
