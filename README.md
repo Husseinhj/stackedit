@@ -4,7 +4,7 @@
 
 > Full-featured, open-source Markdown editor based on PageDown, the Markdown library used by Stack Overflow and the other Stack Exchange sites.
 
-https://stackedit.io/
+https://husseinhj.github.io/rtlstackedit/
 
 ### Ecosystem
 
@@ -51,4 +51,4 @@ npm run build --report
  - Online synchronization using Google Drive, Dropbox and GitHub
  - One click publish to Blogger, Dropbox, Gist, GitHub, Google Drive, WordPress, Zendesk
 
-> **NOTE:** This page has been written and published with [StackEdit](https://stackedit.io/ "StackEdit").
+> **NOTE:** This page has been written and published with [StackEdit](https://husseinhj.github.io/rtlstackedit/ "StackEdit").
